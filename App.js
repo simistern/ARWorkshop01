@@ -26,7 +26,7 @@ import {
  TODO: Insert your API key below
  */
 var sharedProps = {
-  apiKey:"API_KEY_HERE",
+  apiKey:"8CF000DE-4052-4130-B892-3F686EBC19EA",
 }
 
 // Sets the default scene you want for AR and VR
@@ -55,7 +55,9 @@ export default class ViroSample extends Component {
     this._getExperienceButtonOnPress = this._getExperienceButtonOnPress.bind(this);
     this._exitViro = this._exitViro.bind(this);
   }
-
+  componentDidMount(){
+    this._getExperienceButtonOnPress(AR_NAVIGATOR_TYPE);
+  }
   // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
   // if you are building a specific type of experience.
   render() {
@@ -71,6 +73,7 @@ export default class ViroSample extends Component {
   // Presents the user with a choice of an AR or VR experience
   _getExperienceSelector() {
     return (
+      
       <View style={localStyles.outer} >
         <View style={localStyles.inner} >
 
