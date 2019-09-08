@@ -1,4 +1,4 @@
-# In advance of Tuesdays awesome Augmented Reality Workshop, please make sure you have the boilerplate prepared! Please complete the following steps ahead of time. This will give us more time to focus on the fun parts of the workshop! 
+##### In advance of Tuesdays Augmented Reality Workshop, please make sure you have the boilerplate prepared! Please complete the following steps ahead of time. This will give us more time to focus on the fun parts of the workshop! 
 
 ### Step 0: Make sure your computer is set up to develop react native applications. This means that with a generic `react-native init <project>` you are able to get something up and running in react native. 
 
