@@ -12,7 +12,7 @@
 2. Download Viromedia app to your phone, we need this for its TestBed feature which will help us iterate faster!  
 3. globally install ngrok with npm or yarn  
 4. globally install react-viro-cli with npm or yarn 
-5. In your  react-viro init <MyJSWorkshop>
+5. From the projects folder, using your terminal type `react-viro init <MyJSWorkshop>`
 6. Put your API key inside your App.js file
 7. Run the app:  `npm start`
 8. Run ngrok! using the command  `ngrok http 8081`
