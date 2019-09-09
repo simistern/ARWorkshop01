@@ -9,9 +9,14 @@ import {
   ViroText,
   Viro3DObject,
   ViroMaterials,
+  Viro360Image,
+  ViroQuad,
   ViroARPlaneSelector,
   ViroDirectionalLight,
   ViroConstants,
+  ViroPortal,
+  ViroPortalScene,
+  ViroBox
 } from 'react-viro';
 
 const HelloWorldSceneAR = (props) => {
@@ -24,22 +29,22 @@ const HelloWorldSceneAR = (props) => {
           id: "123",
           type: 'OBJ',
           model:
-          "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborghini_Aventador.obj",
+          "https://s3.amazonaws.com/torontojs.arworkshop/ant.obj",
           resources: [
             {
               type: "roughnessTexture",
               uri:
-                "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_gloss.jpeg"
+                "https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg"
             },
             {
               type: "metalnessTexture",
               uri:
-                "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_spec.jpeg"
+              "https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg"
             },
             {
               type: "diffuseTexture",
               uri:
-                "https://s3-us-west-2.amazonaws.com/ar-files-vnovick/Lamborginhi+Aventador_diffuse.jpeg"
+              "https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg"
             }      
           ]
       }
@@ -108,10 +113,67 @@ const HelloWorldSceneAR = (props) => {
             shadowFarZ={4}
             castsShadow={true}
           />
+           <ViroBox
+            position={[0,1,-3]}
+            height={1} width={1} length={1}
+            physicsBody={{
+              type:'dynamic', mass:1
+            }}
+          />
+            <Viro3DObject
+              source={{
+                uri: viroAssets[0].model
+              }}
+
+              ref={ar3dModelRef}
+              resources={[{uri: "https://s3.amazonaws.com/torontojs.arworkshop/ant.mtl"}, {uri : 'https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg'}]}
+              onLoadEnd={data => {
+                alert("Model Loaded");
+              }}
+              onError={event => {
+                alert("Error: ", event);              
+              }}
+              onPress={() => alert('you touched!')}            
+              onDrag={() => {}}
+              scale={[0.5,0.5,0.5]}
+              onRotate={onRotate}
+              position={[0,-1,-1]}
+              rotation={rotation}
+              type={viroAssets[0].type}
+              castsShadow={true}
+            />
         <ViroText text={sampleText} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />        
+        <ViroPortalScene
+            passable={true}
+            position={[0, 0, -5]}
+            dragType="FixedDistance"
+            onDrag={() => {}}
+          >
+            <ViroPortal scale={[0.5, 0.5, 0.5]}>
+                <Viro3DObject
+                  source={require("./res/portal_wood_frame.vrx")}
+                  resources={[
+                    require("./res/portal_wood_frame_diffuse.png"),
+                    require("./res/portal_wood_frame_normal.png"),
+                    require("./res/portal_wood_frame_specular.png")
+                  ]}
+                  type="VRX"
+                />
+            </ViroPortal>
+            <Viro360Image
+              source={require("./res/guadalupe_360.jpg")}
+            />
+          </ViroPortalScene>
         <ViroARPlaneSelector
            ref={planeSelector}
           >
+           <ViroBox
+                  position={[0,1,-3]}
+                  height={1} width={1} length={1}
+                  physicsBody={{
+                    type:'dynamic', mass:1
+                  }}
+          />
           {(viroAssets) &&         
             <Viro3DObject
               source={{
@@ -129,13 +191,22 @@ const HelloWorldSceneAR = (props) => {
               }}
               onPress={() => alert('you touched!')}            
               onDrag={() => {}}
-              scale={scale}
+              scale={[0.5,0.5,0.5]}
               onRotate={onRotate}
               position={[0,-1,-1]}
               rotation={rotation}
               type={viroAssets[0].type}
               castsShadow={true}
             />} 
+            <ViroQuad
+            rotation={[90, 0, 0]}
+            position={[0, -3, -1]}
+            width={15}
+            height={15}
+            physicsBody={{
+              type: "Static"
+            }}
+          />
         </ViroARPlaneSelector>     
       </ViroARScene>
     );
