@@ -17,8 +17,6 @@ import {
 const HelloWorldSceneAR = (props) => {
     let productResources;
     const ar3dModelRef = useRef(null);
-    const planeSelector = useRef(null);
-
     let [viroAssets, setViroAssets] = useState([
       {
           id: "123",
@@ -97,6 +95,18 @@ const HelloWorldSceneAR = (props) => {
           rotation: newRotation
         });
     };
+    const onPinch = (pinchState, scaleFactor, source) => {
+      const newScale = scale.map(x => {
+        return x * scaleFactor;
+      });    
+      if (pinchState == 3) {
+        setScale(newScale);
+        return;
+      }
+      ar3dModelRef.current.setNativeProps({
+        scale: newScale
+      });
+    };
     return (
       <ViroARScene>
         <ViroDirectionalLight
@@ -109,16 +119,13 @@ const HelloWorldSceneAR = (props) => {
             castsShadow={true}
           />
         <ViroText text={sampleText} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />        
-        <ViroARPlaneSelector
-           ref={planeSelector}
-          >
+        <ViroARPlaneSelector>
           {(viroAssets) &&         
             <Viro3DObject
               source={{
                 uri: viroAssets[0].model
               }}
               materials={["modelMaterial"]}
-
               ref={ar3dModelRef}
               resources={productResources}
               onLoadEnd={data => {
@@ -130,6 +137,7 @@ const HelloWorldSceneAR = (props) => {
               onPress={() => alert('you touched!')}            
               onDrag={() => {}}
               scale={scale}
+              onPinch={onPinch}
               onRotate={onRotate}
               position={[0,-1,-1]}
               rotation={rotation}
