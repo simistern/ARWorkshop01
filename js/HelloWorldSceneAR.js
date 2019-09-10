@@ -23,27 +23,30 @@ import {
 } from "react-viro";
 
 const HelloWorldSceneAR = props => {
-  let productResources;
+  // let productResources;
   const ar3dModelRef = useRef(null);
   const planeSelector = useRef(null);
-
+  let [ productResources, setProductResources ] = useState([]);
   let [viroAssets, setViroAssets] = useState([
     {
       id: "123",
       type: "OBJ",
-      model: "https://s3.amazonaws.com/torontojs.arworkshop/ant.obj",
+      model: "https://s3.amazonaws.com/torontojs.arworkshop/SciFi_Fighter.obj",
       resources: [
         {
           type: "roughnessTexture",
-          uri: "https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg"
+          uri:
+            "https://s3.amazonaws.com/torontojs.arworkshop/SF_Fighter-Albedo.jpg"
         },
         {
           type: "metalnessTexture",
-          uri: "https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg"
+          uri:
+            "https://s3.amazonaws.com/torontojs.arworkshop/SF_Fighter-Albedo.jpg"
         },
         {
           type: "diffuseTexture",
-          uri: "https://s3.amazonaws.com/torontojs.arworkshop/antTexture.jpg"
+          uri:
+            "https://s3.amazonaws.com/torontojs.arworkshop/SF_Fighter-Albedo.jpg"
         }
       ]
     }
@@ -57,21 +60,24 @@ const HelloWorldSceneAR = props => {
 
   useEffect(() => {
     const materials = viroAssets[0].resources.reduce(
-      (acc, resource) => ({
+      (acc, resource) => {
+        console.log("acc ", acc, resource)
+        return({
         ...acc,
         [resource.type]: {
           uri: resource.uri
         }
-      }),
+      })},
       {}
     );
-    ViroARTrackingTargets.createTargets({
-      targetOne: {
-        source: require("./res/IMG_8702.png"),
-        orientation: "Up",
-        physicalWidth: 0.1 // real world width in meters
-      }
-    });
+    // alert(materials)
+    // ViroARTrackingTargets.createTargets({
+    //   targetOne: {
+    //     source: require("./res/IMG_8702.png"),
+    //     orientation: "Up",
+    //     physicalWidth: 0.1 // real world width in meters
+    //   }
+    // });
 
     ViroMaterials.createMaterials({
       modelMaterial: {
@@ -79,7 +85,8 @@ const HelloWorldSceneAR = props => {
         ...materials
       }
     });
-    productResources = viroAssets[0].resources.map(resource => resource.uri);
+    setProductResources(viroAssets[0].resources.map(resource => resource.uri));    
+    console.log("test: ", productResources);
   }, [viroAssets]);
   const onRotate = (rotateState, rotationFactor, source) => {
     const newRotation = scale.map((x, index) => {
@@ -95,10 +102,25 @@ const HelloWorldSceneAR = props => {
       rotation: newRotation
     });
   };
+  const onPinch = (pinchState, scaleFactor, source) => {
+    const newScale = scale.map(x => {
+      return x * scaleFactor;
+    });
+    console.log("Show me newScale ", newScale, pinchState, scaleFactor, source);
+    //pinch state 3 is the end of pinch
+    if (pinchState == 3) {
+      setScale(newScale);
+      return;
+    }
+
+    //Ref will always be on current obj prop
+    ar3dModelRef.current.setNativeProps({
+      scale: newScale
+    });
+  };
+
   return (
-    <ViroARScene
-      dragType="FixedToWorld"
-      >
+    <ViroARScene>
       <ViroDirectionalLight
         color="#ffffff"
         direction={[0, -1, -2]}
@@ -107,8 +129,31 @@ const HelloWorldSceneAR = props => {
         shadowNearZ={1}
         shadowFarZ={4}
         castsShadow={true}
-      />     
-      <ViroARImageMarker target={"targetOne"}>
+      />
+      <Viro3DObject
+        source={{
+          uri: viroAssets[0].model
+        }}
+        resources={productResources}
+        materials={["modelMaterial"]}
+        ref={ar3dModelRef}
+        onLoadEnd={data => {
+          alert("Model Loaded");
+        }}
+        onError={event => {
+          alert("Error: ", event);
+        }}
+        onPress={() => alert("you touched!")}
+        onDrag={() => {}}
+        onPinch={onPinch}
+        scale={[0.05, 0.05, 0.05]}
+        onRotate={onRotate}
+        position={[0, 0, -2]}
+        rotation={rotation}
+        type={viroAssets[0].type}
+        castsShadow={true}
+      />
+      {/* <ViroARImageMarker target={"targetOne"}>
         <ViroBox 
               position={[0, 0, 0]} scale={[.01, .01, .01]} 
               height={2}
@@ -213,7 +258,7 @@ const HelloWorldSceneAR = props => {
             type: "Static"
           }}
         />
-      </ViroARPlaneSelector>
+      </ViroARPlaneSelector> */}
     </ViroARScene>
   );
 };

@@ -1,0 +1,16 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 22.10.2018 20:34:19
+
+newmtl Ant
+	Ns 21.000000
+	Ni 1.500000
+	d 1.000000
+	Tr 0.000000
+	Tf 1.000000 1.000000 1.000000 
+	illum 2
+	Ka 0.588235 0.588235 0.588235
+	Kd 0.588235 0.588235 0.588235
+	Ks 0.757647 0.757647 0.757647
+	Ke 0.147059 0.147059 0.147059
+	map_Ka antTexture.jpg
+	map_Kd antTexture.jpg
